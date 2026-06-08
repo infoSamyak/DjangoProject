@@ -11,6 +11,9 @@ class ClientMiddleware:
         client_secret = request.headers.get("client-secret")
         auth_token = request.headers.get("Authorization")
 
+        if request.path.startswith("/admin"):
+            return self.get_response(request)
+
         if not client_id:
             return JsonResponse({
                 "status": "failed",
@@ -21,19 +24,18 @@ class ClientMiddleware:
                 "status": "failed",
                 "message": "client-secret is missing"
             }, status=400)
-        elif (client_id != "Text"):
+        elif client_id != "Text":
             return JsonResponse({
                 "status": "failed",
                 "message": "Invalid client-id"
             }, status=401)
-        elif (client_secret != "Test"):
+        elif client_secret != "Test":
             return JsonResponse({
                 "status": "failed",
-                "message": "Invalid client-id"
+                "message": "Invalid client-secret"
             }, status=401)
 
-        if (request.path.startswith("/api/")):
-
+        if request.path.startswith("/api"):
             if not auth_token:
                 return JsonResponse({
                     "status": "failed",
@@ -41,7 +43,7 @@ class ClientMiddleware:
                 }, status=400)
 
             verified_token = jwt.verify_token(auth_token)
-            if (verified_token["success"] == False):
+            if verified_token["success"] == False:
                 return JsonResponse({
                     "status": "failed",
                     "message": verified_token["message"]

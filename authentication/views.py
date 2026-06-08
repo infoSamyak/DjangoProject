@@ -11,7 +11,7 @@ def login(request: HttpRequest):
         token = jwt.encode({
             "id": body["id"],
             "name": body["name"],
-            "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=1)
+            "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=60)
         }, "TEST", algorithm="HS256",)
         print(body)
         return JsonResponse({

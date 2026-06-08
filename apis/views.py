@@ -1,3 +1,1 @@
-from django.shortcuts import render
-
-# Create your views here.
+# apis/views.py no longer contains products logic.
