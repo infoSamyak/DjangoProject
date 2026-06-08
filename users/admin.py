@@ -4,5 +4,5 @@ from .models import Users
 
 @admin.register(Users)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "fname")
+    list_display = ("id", "fname", "lname")
     search_fields = ("fname",)
