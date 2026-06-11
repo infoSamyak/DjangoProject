@@ -6,7 +6,7 @@ from django.db import models
 class Users(models.Model):
     fname = models.CharField(max_length=255)
     lname = models.CharField(max_length=255)
-    age = models.IntegerField(max_length=2)
+    age = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

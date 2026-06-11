@@ -1,54 +1,38 @@
-from django.http import JsonResponse, HttpRequest
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from utils.responses import ErrorResponse, SuccessResponse
+
 from .models import Users
+from .serializers import UserSerializer
 
 
-def get_users(request: HttpRequest):
-    if (request.method != "GET"):
-        return JsonResponse({
-            "error": "Method Not Allowed",
-        }, status=405)
-
+@api_view(["GET"])
+def get_users(_):
     try:
         users = Users.objects.all()
-        data = [
-            {
-                "id": u.id,
-                "first_name": u.fname,
-                "last_name": u.lname,
-                "age": u.age
-            }
-            for u in users
-        ]
+        serializer = UserSerializer(users, many=True)
 
-        return JsonResponse({
-            "message": "Users fetched successfully",
-            "data": data
-        })
+        return SuccessResponse(serializer.data)
+
     except:
-        return JsonResponse({
-            "error": "usersØ not found"
-        }, status=404)
+        return ErrorResponse(
+            "users not found",
+            status.HTTP_404_NOT_FOUND
+        )
 
 
-def get_user(request: HttpRequest, id: int):
-    if (request.method != "GET"):
-        return JsonResponse({
-            "error": "Method Not Allowed",
-        }, status=405)
-
+@api_view(["GET"])
+def get_user(_, id: int):
     try:
         user = Users.objects.get(id=id)
-        data = {
-            "id": user.id,
-            "first_name": user.fname,
-            "last_name": user.lname,
-            "age": user.age
-        }
-        return JsonResponse({
-            "message": "Users fetched successfully",
-            "data": data
-        })
+        serialize = UserSerializer(user)
+
+        return SuccessResponse(serialize.data)
+
     except:
-        return JsonResponse({
-            "error": "user not found"
-        }, status=404)
+        return ErrorResponse(
+            "User not found",
+            status.HTTP_404_NOT_FOUND
+        )
